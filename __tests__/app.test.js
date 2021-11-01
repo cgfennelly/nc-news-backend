@@ -20,11 +20,14 @@ describe('Server tests', () => {
             });
         });
     });
-});
-
-
-describe('placeholder test', () => {
-    test('placeholder test', () => {
-        expect(1).toEqual(1);
+    describe('Generalised error handlers', () => {
+        test('Status 404: Bad URL', () => {
+            return request(app)
+            .get('/api/BAD_PATH')
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+        });
     })
-})
+});

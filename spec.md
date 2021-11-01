@@ -13,6 +13,7 @@ POINTS TO CHECK
 - I do not understand what the utils function is required for
 
 
-## BUILDING A SIMPLE API END POINT ##
-- API welcome message returned. Build Routers into this from the beginning
-- TDD for API welcome message
+## BUILDING A SIMPLE API END POINT AND ERROR HANDLING ##
+- API welcome message returned. Build Routers into this from beginning (/)
+- TDD for API welcome message (/)
+- TDD for 404 Bad URL and 500 Server Error
