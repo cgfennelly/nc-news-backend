@@ -16,4 +16,17 @@ POINTS TO CHECK
 ## BUILDING A SIMPLE API END POINT AND ERROR HANDLING ##
 - API welcome message returned. Build Routers into this from beginning (/)
 - TDD for API welcome message (/)
-- TDD for 404 Bad URL and 500 Server Error
+- TDD for 404 Bad URL (/)
+
+POINTS TO CHECK
+- Can I build TDD for the 500 error handler?
+
+## GET api/topics ##
+- Build TDD for happy path (/)
+- Is there a sad path for this? (/ - No - no potential for mistaken client input)
+- Build function (/)
+
+## GET api/articles/:article_id ##
+- Build TDD for happy path (/)
+- Build TDD for sad path (/)
+- Build function
