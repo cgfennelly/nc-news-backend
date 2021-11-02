@@ -1,10 +1,6 @@
 exports.customErrors = (err, req, res, next) => {
-    console.log("THIS ONE -->", err.msg);
-    console.log(err.status)
-    if (err.status) {
-        console.log('The error status exists - custom error')
-        console.log(err.msg)
-        res.status(err.status).send(err.msg);
+    if (err.status && err.msg) {
+        res.status(err.status).send({msg: err.msg});
     } else next(err)
 }
 

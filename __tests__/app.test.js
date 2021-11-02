@@ -49,7 +49,7 @@ describe('Server tests', () => {
             });
         });
     });
-    describe.only('Endpoint GET /api/articles/:article_id', () => {
+    describe('Endpoint GET /api/articles/:article_id', () => {
         test('Status 200: individual article returned in array', () => {
             return request(app)
             .get('/api/articles/5')
@@ -80,12 +80,11 @@ describe('Server tests', () => {
                     expect(body.msg).toBe("Bad parameter passed");
                 });
             })
-            test('Well formed article_id that doesnt exist in the database', () => {
+            test('Valid article_id that doesnt exist in the database', () => {
                 return request(app)
                 .get('/api/articles/1234')
                 .expect(404)
                 .then(({ body }) => {
-                    console.log("JEST: ", body)
                     expect(body.msg).toBe('No content found');
                 });
             });
