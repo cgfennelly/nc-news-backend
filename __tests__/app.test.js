@@ -8,6 +8,7 @@ const seed = require('../db/seeds/seed.js');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
+let patchBody = {};
 
 describe('Server tests', () => {
     describe('Simple endpoint', () => {
@@ -31,7 +32,7 @@ describe('Server tests', () => {
         });
     });
     describe('Endpoint GET /api/topics', () => {
-        test('Status 200: topics returned in an array', () => {
+        test('Status 200: topics returned to client (in array)', () => {
             return request(app)
             .get('/api/topics')
             .expect(200)
@@ -50,13 +51,12 @@ describe('Server tests', () => {
         });
     });
     describe('Endpoint GET /api/articles/:article_id', () => {
-        test('Status 200: individual article returned in array', () => {
+        test('Status 200: individual article returned to client (in array)', () => {
             return request(app)
             .get('/api/articles/5')
             .expect(200)
             .then(({ body }) => {
                 const { article } = body;
-
                 expect(article).toHaveLength(1);
                 expect(article[0]).toEqual(
                     expect.objectContaining({
@@ -67,11 +67,27 @@ describe('Server tests', () => {
                         topic: expect.any(String),
                         author: expect.any(String),
                         created_at: expect.any(String),
+                        comment_count: expect.any(Number)
                     })
                 );
             });
         });
-        describe('Endpoint GET /api/articles/:article_id - Error Handling', () => {
+        test('Checking the comment_count for a specific article_id', () => {
+            return request(app)
+            .get('/api/articles/1')
+            .expect(200)
+            .then(({ body }) => {
+                const { article } = body;
+                expect(article).toHaveLength(1);
+                expect(article[0]).toEqual(
+                    expect.objectContaining({
+                        article_id: 1,
+                        comment_count: 11
+                    })
+                );
+            });
+        });
+        describe('Endpoint GET /api/articles/:article_id - Error handling', () => {
             test('Bad article_id. Status 400: Bad parameter passed', () => {
                 return request(app)
                 .get('/api/articles/BAD_QUERY')
@@ -90,4 +106,115 @@ describe('Server tests', () => {
             });
         });
     });
+    describe('Endpoint PATCH /api/articles/:article_id', () => {
+        test('Status 200: updated article returned to client (in array)', () => {
+            //Assertion1: update of votes for article 5 from 0 --> 9
+            patchBody = {inc_votes: 9};
+            return request(app)
+            .patch('/api/articles/5')
+            .send(patchBody)
+            .expect(200)
+            .then(({ body }) => {
+                const { article } = body;
+                expect(article).toHaveLength(1);
+                expect(article[0]).toEqual(
+                    expect.objectContaining({
+                        article_id: 5,
+                        votes: 9,
+                        //update of votes
+                    })
+                );
+            });    
+        });
+        test('Status 200: updated article returned to client (in array)', () => {
+            //Assertion2: update of votes for article 5 from 0 --> -10
+            const patchBody = {inc_votes: -10};
+            return request(app)
+            .patch('/api/articles/5')
+            .send(patchBody)
+            .expect(200)
+            .then(({ body }) => {
+                const { article } = body;
+                expect(article).toHaveLength(1);
+                expect(article[0]).toEqual(
+                    expect.objectContaining({
+                        article_id: 5,
+                        votes: -10,
+                        //update of votes
+                    })
+                );
+            }); 
+        });
+        test('Status 200: updated article returned to client (in array)', () => {
+            //Assertion3: update of votes for article 1 from 100 --> -200
+            const patchBody = {inc_votes: -300};
+            return request(app)
+            .patch('/api/articles/1')
+            .send(patchBody)
+            .expect(200)
+            .then(({ body }) => {
+                const { article } = body;
+                expect(article).toHaveLength(1);
+                expect(article[0]).toEqual(
+                    expect.objectContaining({
+                        article_id: 1,
+                        votes: -200,
+                        //update of votes
+                    })
+                );
+            });
+        });
+        describe('Endpoint PATCH /api/articles/:article_id - Error handling', () => {
+            test('Bad article_id. Status 400: Bad parameter passed', () => {
+                patchBody = {inc_votes: 9};
+                return request(app)
+                .patch('/api/articles/BAD_QUERY')
+                .send(patchBody)
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad parameter passed");
+                });
+            });
+            test('Valid article_id that doesnt exist in the database', () => {
+                patchBody = {inc_votes: 9};
+                return request(app)
+                .patch('/api/articles/1234')
+                .send(patchBody)
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('No content found');
+                });
+            });
+            test('Valid article_id but bad body passed', () => {
+                patchBody = {inc_votes: "BAD_INPUT"};
+                return request(app)
+                .patch('/api/articles/5')
+                .send(patchBody)
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('Inputted data not formatted correctly');
+                });
+            });
+            test('Valid article_id but empty body passed', () => {
+                patchBody = {inc_votes: ''};
+                return request(app)
+                .patch('/api/articles/5')
+                .send(patchBody)
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('Inputted data not formatted correctly');
+                });
+            });
+            test('Valid article_id and body, but client also trying to update other values', () => {
+                patchBody = {inc_votes: 69, author: "ILLEGAL_INPUT"};
+                return request(app)
+                .patch('/api/articles/5')
+                .send(patchBody)
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe('Inputted data not formatted correctly');
+                });
+            });
+        })
+    })
 });

@@ -21,14 +21,24 @@ POINTS TO CHECK
 POINTS TO CHECK
 - Can I build TDD for the 500 error handler? (/) - (No, it was discussed in lecture but it doesn't seem standard to test for the server dropping out / etc)
 
-## GET api/topics ##
+## GET /api/topics ##
 - Build TDD for happy path (/)
 - Is there a sad path for this? (/) - (No - no potential for mistaken client input)
 - Build function (/)
 
-## GET api/articles/:article_id ##
+## GET /api/articles/:article_id ##
 - Build TDD for happy path (/)
 - Build TDD for sad path (/)
+- Build function (/)
+
+## PATCH /api/articles/:article_id ##
+- TDD for happy path (multiple examples) (/)
+- Build function for happy path (/)
+- TDD for sad path: (/)
+-- bad parameter passed (/)
+-- valid parameter but no db entry present (/)
+-- bad body passed (inc if multiple keys) (/)
+-- valid body passed but not value on object (/)
 - Build function
 
 
