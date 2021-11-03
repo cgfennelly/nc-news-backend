@@ -289,5 +289,31 @@ describe('Server tests', () => {
                 expect(body.articles).toBeSortedBy("title");
             });
         });
+        describe('Endpoint GET /api/articles - Error handling', () => {
+            test('Client sort_by option is not present in table', () => {
+                return request(app)
+                .get('/api/articles?sort_by=BAD_INPUT')
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad parameter passed");
+                });
+            });
+            test('Client order input is not ASC or DESC', () => {
+                return request(app)
+                .get('/api/articles?order=BAD_INPUT')
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad parameter passed");
+                });
+            });
+            test.skip('Client topic input is not in table', () => {
+                return request(app)
+                .get('/api/articles?topic=BAD_INPUT')
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad parameter passed");
+                });
+            });
+        });
     })
 });

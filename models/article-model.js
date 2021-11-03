@@ -1,3 +1,4 @@
+const { defaultConfiguration } = require('../app');
 const db = require('../db/connection');
 
 exports.fetchArticleID = (articleID) => {
@@ -37,23 +38,35 @@ exports.editArticleID = (article_id, inc_votes) => {
 
 exports.fetchArticles = (sort_by = 'created_at', order = 'DESC', topic) => {
     
-    let queryStr = `SELECT articles.article_id, articles.title, articles.votes, 
-    articles.topic, articles.author, articles.created_at, 
-    COUNT(comments.article_id) AS comment_count 
-    FROM articles 
-    LEFT JOIN comments 
-    ON comments.article_id = articles.article_id `;
+    return Promise.all([sort_by, order, topic, db.query(`SELECT DISTINCT topic FROM articles ;`)])
+    .then(([sort_by, order, topic, { rows }]) => {
+        const topicsInDB = rows
+        
+        let topicCheck = false;
+        for (const element of topicsInDB) {
+            if (Object.values(element).indexOf(topic) > -1) topicCheck = true;
+        }
+        if(topic && topicCheck === false) {
+            return Promise.reject({status: 400, msg: "Bad parameter passed"});
+        }
 
-    if (topic ) {
-        queryStr += `WHERE articles.topic='${topic}' `
-    }
+        let queryStr = `SELECT articles.article_id, articles.title, articles.votes, 
+        articles.topic, articles.author, articles.created_at, 
+        COUNT(comments.article_id) AS comment_count 
+        FROM articles 
+        LEFT JOIN comments 
+        ON comments.article_id = articles.article_id `;
 
-    queryStr += `GROUP BY articles.article_id 
-    ORDER BY articles.${sort_by} ${order} ;`
-    
-    
-    return db.query(queryStr)
-    .then(({ rows }) => {
-        return rows;
+        if (topic ) {
+            queryStr += `WHERE articles.topic='${topic}' `
+        }
+
+        queryStr += `GROUP BY articles.article_id 
+        ORDER BY articles.${sort_by} ${order} ;`
+        
+        return db.query(queryStr)
+        .then(({ rows }) => {
+            return rows;
+        })
     })
 }

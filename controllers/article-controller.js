@@ -28,10 +28,18 @@ exports.patchArticleID = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    
     const { sort_by } = req.query;
     const { order } = req.query;
     const { topic } = req.query;
+
+    const sortByPermissible = ['article_id', 'title', 'votes', 'topic', 'author', 'created_at', 'comment_count'];
+
+    if (sort_by && !sortByPermissible.includes(sort_by)) {
+        throw ({status: 400, msg: 'Bad parameter passed'});
+    }
+    if (order && order !== 'ASC' && order !== 'DESC') {
+        throw ({status: 400, msg: 'Bad parameter passed'});
+    }
     
     fetchArticles(sort_by, order, topic)
     .then((articles) => {
