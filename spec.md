@@ -55,12 +55,19 @@ POINTS TO CHECK
 - Error Handle: validate the user input for sort_by and order (/)
 
 ## GET /api/articles/:article_id/comments ##
-- TDD for requesting articleID and receiving array of comments  
-- Build function
+- TDD for requesting articleID and receiving array of comments  (/)
+- Build function (/)
+- TDD error for restricting BAD article_id inputs (/)
+- TDD error for unfound article_id number (/)
+- Build function (if any) (/)
 
-ERRORS
-- ensure BAD article_IDs can't be passed in
-- allow sql to deal with articl_id numbers that don't exist in db.
+## POST /api/articles/:article_id/comments ##
+- TDD for sending in an article_id + body; receiving the posted comment
+- Build function 
+
+ERROR
+- bad art_id
+- bad body
 
 
 ## FUTURE TASKS ##

@@ -76,8 +76,12 @@ exports.fetchArticleIDComments = (article_id) => {
     return db.query(`SELECT comments.article_id, comments.comment_id, 
     comments.votes, comments.created_at, comments.author, comments.body 
     FROM comments  
-    WHERE comments.article_id=${article_id} ;`)
+    WHERE comments.article_id=$1 ;`, [article_id])
     .then(({ rows }) => {
+        console.log(rows);
+        if (rows.length === 0) {
+            return Promise.reject({status: 404, msg: "No content found"});
+        }
         return rows;
     })
 

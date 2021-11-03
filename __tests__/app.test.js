@@ -357,5 +357,23 @@ describe('Server tests', () => {
                 });
             });
         });
+        describe('Endpoint GET /api/articles/:article_id/comments - Error handling', () => {
+            test('Error: Client input a BAD article_id', () => {
+                return request(app)
+                .get('/api/articles/BAD_ID/comments')
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad parameter passed");
+                });
+            });
+            test.only('Error: Client input an article_id that doesnt exist', () => {
+                return request(app)
+                .get('/api/articles/989/comments')
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("No content found");
+                });
+            });
+        })
     })
 });
