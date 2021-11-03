@@ -70,3 +70,15 @@ exports.fetchArticles = (sort_by = 'created_at', order = 'DESC', topic) => {
         })
     })
 }
+
+exports.fetchArticleIDComments = (article_id) => {
+
+    return db.query(`SELECT comments.article_id, comments.comment_id, 
+    comments.votes, comments.created_at, comments.author, comments.body 
+    FROM comments  
+    WHERE comments.article_id=${article_id} ;`)
+    .then(({ rows }) => {
+        return rows;
+    })
+
+}

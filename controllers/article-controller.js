@@ -1,4 +1,4 @@
-const { fetchArticleID, editArticleID, fetchArticles } = require('../models/article-model');
+const { fetchArticleID, editArticleID, fetchArticles, fetchArticleIDComments } = require('../models/article-model');
 
 exports.getArticleID = (req, res, next) => {
 
@@ -44,5 +44,16 @@ exports.getArticles = (req, res, next) => {
     fetchArticles(sort_by, order, topic)
     .then((articles) => {
         res.status(200).send({articles});
+    })
+    .catch(next);
+}
+
+exports.getArticleIDComments = (req, res, next) => {
+    
+    const { article_id } = req.params;
+
+    fetchArticleIDComments(article_id)
+    .then((comments) => {
+        res.status(200).send({comments})
     })
 }

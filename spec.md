@@ -52,9 +52,15 @@ POINTS TO CHECK
 - Build function (/)
 - TDD for topic selection (/)
 - Build function (/)
+- Error Handle: validate the user input for sort_by and order (/)
 
-ERROR-HANDLING
-- validate the user input for sort_by and order
+## GET /api/articles/:article_id/comments ##
+- TDD for requesting articleID and receiving array of comments  
+- Build function
+
+ERRORS
+- ensure BAD article_IDs can't be passed in
+- allow sql to deal with articl_id numbers that don't exist in db.
 
 
 ## FUTURE TASKS ##

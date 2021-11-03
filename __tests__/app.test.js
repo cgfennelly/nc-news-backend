@@ -315,5 +315,47 @@ describe('Server tests', () => {
                 });
             });
         });
+    });
+    describe('Endpoint GET /api/articles/:article_id/comments', () => {
+        test('Status 200: returns array of comments to client - Assertion #1', () => {
+            return request(app)
+            .get('/api/articles/5/comments')
+            .expect(200)
+            .then(({ body }) => {
+                const { comments } = body;
+                expect(comments).toHaveLength(2);
+                comments.forEach(element => {
+                    expect(element).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            created_at: expect.any(String),
+                            author: expect.any(String),
+                            body: expect.any(String)
+                        })
+                    );
+                });
+            });
+        });
+        test('Status 200: returns array of comments to client - Assertion #2', () => {
+            return request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then(({ body }) => {
+                const { comments } = body;
+                expect(comments).toHaveLength(11);
+                comments.forEach(element => {
+                    expect(element).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            created_at: expect.any(String),
+                            author: expect.any(String),
+                            body: expect.any(String)
+                        })
+                    );
+                });
+            });
+        });
     })
 });
