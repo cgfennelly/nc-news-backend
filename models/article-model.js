@@ -34,3 +34,20 @@ exports.editArticleID = (article_id, inc_votes) => {
         return rows;
     })
 }
+
+exports.fetchArticles = () => {
+    return db.query(`
+    SELECT articles.article_id, articles.title, articles.votes, 
+    articles.topic, articles.author, articles.created_at, 
+    COUNT(comments.article_id) AS comment_count 
+    FROM articles 
+    LEFT JOIN comments 
+    ON comments.article_id = articles.article_id 
+    GROUP BY articles.article_id ;
+    `)
+    .then(({ rows }) => {
+        return rows;
+    })
+}
+
+//SELECT articles.article_id, articles.title, articles.votes, articles.topic, articles.author, articles.created_at, COUNT(comments.article_id) FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ;

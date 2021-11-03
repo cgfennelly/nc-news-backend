@@ -217,4 +217,28 @@ describe('Server tests', () => {
             });
         })
     })
+    describe.only('Endpoint GET /api/articles', () => {
+        test('A standard GET /api/articles request. Status 200: all articles returned', () => {
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                articles.forEach((element) => {
+                    expect(element).toEqual(
+                        expect.objectContaining({
+                            article_id: expect.any(Number),
+                            title: expect.any(String),
+                            votes: expect.any(Number),
+                            topic: expect.any(String),
+                            author: expect.any(String),
+                            created_at: expect.any(String),
+                            comment_count: expect.any(String)
+                        })
+                    );  
+                });
+                expect(articles).toHaveLength(12);
+            });
+        })
+    })
 });

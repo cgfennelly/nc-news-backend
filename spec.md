@@ -41,6 +41,14 @@ POINTS TO CHECK
 -- valid body passed but not value on object (/)
 - Build function
 
+## GET /api/articles ##
+- TDD for returning the correct data (/)
+- Build function (/)
+SORT BY
+ORDER
+TOPIC
+ERROR-HANDLING
+
 
 ## FUTURE TASKS ##
 - Can move the 'catch all bad path' controller into the error-handler controllers and take out of the app.js
