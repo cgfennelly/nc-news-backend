@@ -44,10 +44,17 @@ POINTS TO CHECK
 ## GET /api/articles ##
 - TDD for returning the correct data (/)
 - Build function (/)
-SORT BY
-ORDER
-TOPIC
+- TDD for default sort order of date DESC (/)
+- TDD for client input of sort query (/)
+- Build function (/)
+- TDD for changing order of default sort (created_at) (/)
+- TDD for both sort_by and order (/)
+- Build function (/)
+- TDD for topic selection (/)
+- Build function (/)
+
 ERROR-HANDLING
+- validate the user input for sort_by and order
 
 
 ## FUTURE TASKS ##

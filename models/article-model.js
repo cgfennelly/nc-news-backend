@@ -35,19 +35,25 @@ exports.editArticleID = (article_id, inc_votes) => {
     })
 }
 
-exports.fetchArticles = () => {
-    return db.query(`
-    SELECT articles.article_id, articles.title, articles.votes, 
+exports.fetchArticles = (sort_by = 'created_at', order = 'DESC', topic) => {
+    
+    let queryStr = `SELECT articles.article_id, articles.title, articles.votes, 
     articles.topic, articles.author, articles.created_at, 
     COUNT(comments.article_id) AS comment_count 
     FROM articles 
     LEFT JOIN comments 
-    ON comments.article_id = articles.article_id 
-    GROUP BY articles.article_id ;
-    `)
+    ON comments.article_id = articles.article_id `;
+
+    if (topic ) {
+        queryStr += `WHERE articles.topic='${topic}' `
+    }
+
+    queryStr += `GROUP BY articles.article_id 
+    ORDER BY articles.${sort_by} ${order} ;`
+    
+    
+    return db.query(queryStr)
     .then(({ rows }) => {
         return rows;
     })
 }
-
-//SELECT articles.article_id, articles.title, articles.votes, articles.topic, articles.author, articles.created_at, COUNT(comments.article_id) FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ;

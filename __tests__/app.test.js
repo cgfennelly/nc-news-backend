@@ -217,7 +217,7 @@ describe('Server tests', () => {
             });
         })
     })
-    describe.only('Endpoint GET /api/articles', () => {
+    describe('Endpoint GET /api/articles', () => {
         test('A standard GET /api/articles request. Status 200: all articles returned', () => {
             return request(app)
             .get('/api/articles')
@@ -239,6 +239,55 @@ describe('Server tests', () => {
                 });
                 expect(articles).toHaveLength(12);
             });
-        })
+        });
+        test('Default ordering of data is by created_at and is descending', () => {
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("created_at", {descending: true});
+            });
+        });
+        test('Client to request sort_by - author descending', () => {
+            return request(app)
+            .get('/api/articles?sort_by=author')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("author", {descending: true});
+            });
+        });
+        test('Client to change order of default sort_by - created_at ascending', () => {
+            return request(app)
+            .get('/api/articles?order=ASC')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("created_at");
+            });
+        });
+        test('Client to change order and sort_by - title ascending', () => {
+            return request(app)
+            .get('/api/articles?sort_by=title&order=ASC')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy("title");
+            });
+        });
+        test('Client to select topic as WHERE parameter', () => {
+            return request(app)
+            .get('/api/articles?topic=cats')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toHaveLength(1);
+            });
+        });
+        test('Client to select topic as WHERE parameter, and set sort_by  order', () => {
+            return request(app)
+            .get('/api/articles?topic=mitch&order=ASC&sort_by=title')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toHaveLength(11);
+                expect(body.articles).toBeSortedBy("title");
+            });
+        });
     })
 });
