@@ -8,7 +8,7 @@ const seed = require('../db/seeds/seed.js');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-let patchBody = {};
+let sendBody = {};
 
 describe('Server tests', () => {
     describe('Simple endpoint', () => {
@@ -109,10 +109,10 @@ describe('Server tests', () => {
     describe('Endpoint PATCH /api/articles/:article_id', () => {
         test('Status 200: updated article returned to client (in array)', () => {
             //Assertion1: update of votes for article 5 from 0 --> 9
-            patchBody = {inc_votes: 9};
+            sendBody = {inc_votes: 9};
             return request(app)
             .patch('/api/articles/5')
-            .send(patchBody)
+            .send(sendBody)
             .expect(200)
             .then(({ body }) => {
                 const { article } = body;
@@ -128,10 +128,10 @@ describe('Server tests', () => {
         });
         test('Status 200: updated article returned to client (in array)', () => {
             //Assertion2: update of votes for article 5 from 0 --> -10
-            const patchBody = {inc_votes: -10};
+            const sendBody = {inc_votes: -10};
             return request(app)
             .patch('/api/articles/5')
-            .send(patchBody)
+            .send(sendBody)
             .expect(200)
             .then(({ body }) => {
                 const { article } = body;
@@ -147,10 +147,10 @@ describe('Server tests', () => {
         });
         test('Status 200: updated article returned to client (in array)', () => {
             //Assertion3: update of votes for article 1 from 100 --> -200
-            const patchBody = {inc_votes: -300};
+            const sendBody = {inc_votes: -300};
             return request(app)
             .patch('/api/articles/1')
-            .send(patchBody)
+            .send(sendBody)
             .expect(200)
             .then(({ body }) => {
                 const { article } = body;
@@ -166,50 +166,50 @@ describe('Server tests', () => {
         });
         describe('Endpoint PATCH /api/articles/:article_id - Error handling', () => {
             test('Bad article_id. Status 400: Bad parameter passed', () => {
-                patchBody = {inc_votes: 9};
+                sendBody = {inc_votes: 9};
                 return request(app)
                 .patch('/api/articles/BAD_QUERY')
-                .send(patchBody)
+                .send(sendBody)
                 .expect(400)
                 .then(({ body }) => {
                     expect(body.msg).toBe("Bad parameter passed");
                 });
             });
             test('Valid article_id that doesnt exist in the database', () => {
-                patchBody = {inc_votes: 9};
+                sendBody = {inc_votes: 9};
                 return request(app)
                 .patch('/api/articles/1234')
-                .send(patchBody)
+                .send(sendBody)
                 .expect(404)
                 .then(({ body }) => {
                     expect(body.msg).toBe('No content found');
                 });
             });
             test('Valid article_id but bad body passed', () => {
-                patchBody = {inc_votes: "BAD_INPUT"};
+                sendBody = {inc_votes: "BAD_INPUT"};
                 return request(app)
                 .patch('/api/articles/5')
-                .send(patchBody)
+                .send(sendBody)
                 .expect(400)
                 .then(({ body }) => {
                     expect(body.msg).toBe('Inputted data not formatted correctly');
                 });
             });
             test('Valid article_id but empty body passed', () => {
-                patchBody = {inc_votes: ''};
+                sendBody = {inc_votes: ''};
                 return request(app)
                 .patch('/api/articles/5')
-                .send(patchBody)
+                .send(sendBody)
                 .expect(400)
                 .then(({ body }) => {
                     expect(body.msg).toBe('Inputted data not formatted correctly');
                 });
             });
             test('Valid article_id and body, but client also trying to update other values', () => {
-                patchBody = {inc_votes: 69, author: "ILLEGAL_INPUT"};
+                sendBody = {inc_votes: 69, author: "ILLEGAL_INPUT"};
                 return request(app)
                 .patch('/api/articles/5')
-                .send(patchBody)
+                .send(sendBody)
                 .expect(400)
                 .then(({ body }) => {
                     expect(body.msg).toBe('Inputted data not formatted correctly');
@@ -376,7 +376,31 @@ describe('Server tests', () => {
             });
         })
     })
-    // describe('POST /api/articles/:article_id/comments', () => {
-
-    // })
+    describe('POST /api/articles/:article_id/comments', () => {
+        test.only('Posting a compliant comment', () => {
+            sendBody = {
+                username: "lurker",
+                body: "insightful comment"
+            }
+            return request(app)
+            .post('/api/articles/9/comments')
+            .send(sendBody)
+            .expect(200)
+            .then(({ body }) => {
+                console.log("This is returned")
+                const commentData = body.comment;
+                console.log(commentData)
+                expect(commentData).toEqual(
+                    expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        author: sendBody.username,
+                        article_id: 9,
+                        votes: 1,
+                        created_at: expect.any(String),
+                        body: sendBody.body
+                    })
+                )
+            });
+        });
+    })
 });

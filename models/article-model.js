@@ -1,4 +1,4 @@
-const { defaultConfiguration } = require('../app');
+const { defaultConfiguration } = require('../app'); ///???????
 const db = require('../db/connection');
 
 exports.fetchArticleID = (articleID) => {
@@ -85,4 +85,14 @@ exports.fetchArticleIDComments = (article_id) => {
         return rows;
     })
 
+}
+
+exports.submitArticleIDComment = (article_id, comment) => {
+    return db.query(`INSERT INTO comments 
+    (body, votes, author, article_id) 
+    VALUES 
+    ($1, 1, $2, $3) RETURNING * ;`, [comment.body, comment.username, article_id])
+    .then(({ rows }) => {
+        return rows;
+    })
 }

@@ -12,7 +12,6 @@ articleRouter.route('/:article_id/comments')
 .get(getArticleIDComments)
 .post(postArticleIDComment);
 
-
 articleRouter.use('/', getArticles);
 
 
