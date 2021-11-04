@@ -306,7 +306,7 @@ describe('Server tests', () => {
                     expect(body.msg).toBe("Bad parameter passed");
                 });
             });
-            test.skip('Client topic input is not in table', () => {
+            test('Client topic input is not in table', () => {
                 return request(app)
                 .get('/api/articles?topic=BAD_INPUT')
                 .expect(400)
@@ -366,7 +366,7 @@ describe('Server tests', () => {
                     expect(body.msg).toBe("Bad parameter passed");
                 });
             });
-            test.only('Error: Client input an article_id that doesnt exist', () => {
+            test('Error: Client input an article_id that doesnt exist', () => {
                 return request(app)
                 .get('/api/articles/989/comments')
                 .expect(404)
@@ -376,4 +376,7 @@ describe('Server tests', () => {
             });
         })
     })
+    // describe('POST /api/articles/:article_id/comments', () => {
+
+    // })
 });

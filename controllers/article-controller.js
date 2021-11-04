@@ -58,3 +58,7 @@ exports.getArticleIDComments = (req, res, next) => {
     })
     .catch(next);
 }
+
+exports.postArticleIDComment = (req, res, next) => {
+    
+}

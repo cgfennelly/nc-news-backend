@@ -68,6 +68,7 @@ POINTS TO CHECK
 ERROR
 - bad art_id
 - bad body
+- No comments
 
 
 ## FUTURE TASKS ##
