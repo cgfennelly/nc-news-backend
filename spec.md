@@ -62,17 +62,24 @@ POINTS TO CHECK
 - Build function (if any) (/)
 
 ## POST /api/articles/:article_id/comments ##
-- TDD for sending in an article_id + body; receiving the posted comment
-- Build function 
+- TDD for sending in an article_id + body; receiving the posted comment (/)
+- Build function (/)
 
 ERROR
 - bad art_id
 - bad body
 - No comments
 
+## DELETE /api/comments/:comment_id ##
+- TDD for deleting a comment (check removal from table)
+- ###__How to count the total remaining in table?__###
+- TDD for response client gets (204) (/)
+- Build function (/)
+
+
 
 ## FUTURE TASKS ##
-- Can move the 'catch all bad path' controller into the error-handler controllers and take out of the app.js
+- Can move the 'catch all bad URL path' controller into the error-handler controllers and take out of the app.js
 - Any complicated model condition checks? Extract that into a utils function.
 - Refactor for async / await.
 - Refactor test file as different describe blocks per endpoint (rather than nesting).

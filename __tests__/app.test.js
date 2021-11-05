@@ -11,7 +11,7 @@ afterAll(() => db.end());
 let sendBody = {};
 
 describe('Server tests', () => {
-    describe('Simple endpoint', () => {
+    describe.skip('Simple endpoint', () => {
         test('client input of "/api" responds with 200 and welcome message', () => {
             return request(app)
             .get('/api')
@@ -377,7 +377,7 @@ describe('Server tests', () => {
         })
     })
     describe('POST /api/articles/:article_id/comments', () => {
-        test.only('Posting a compliant comment', () => {
+        test('Posting a compliant comment', () => {
             sendBody = {
                 username: "lurker",
                 body: "insightful comment"
@@ -387,9 +387,7 @@ describe('Server tests', () => {
             .send(sendBody)
             .expect(200)
             .then(({ body }) => {
-                console.log("This is returned")
                 const commentData = body.comment;
-                console.log(commentData)
                 expect(commentData).toEqual(
                     expect.objectContaining({
                         comment_id: expect.any(Number),
@@ -402,5 +400,18 @@ describe('Server tests', () => {
                 )
             });
         });
+    })
+    describe('Endpoint DELETE /api/comments/:comment_id', () => {
+        test('Deleting a comment', () => {
+            // Starts with 18 comments in the comments table
+            // Remove comment_id 10
+            return request(app)
+            .delete('/api/comments/10')
+            .expect(204)
+            .then((comment_count) => {
+                console.log(comment_count);
+                //expect(comment_count.count).toBe(17);
+            })
+        })
     })
 });

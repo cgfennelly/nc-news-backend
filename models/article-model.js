@@ -1,4 +1,3 @@
-const { defaultConfiguration } = require('../app'); ///???????
 const db = require('../db/connection');
 
 exports.fetchArticleID = (articleID) => {
@@ -78,7 +77,6 @@ exports.fetchArticleIDComments = (article_id) => {
     FROM comments  
     WHERE comments.article_id=$1 ;`, [article_id])
     .then(({ rows }) => {
-        console.log(rows);
         if (rows.length === 0) {
             return Promise.reject({status: 404, msg: "No content found"});
         }

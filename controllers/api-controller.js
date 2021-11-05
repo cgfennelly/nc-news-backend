@@ -1,3 +1,6 @@
+const apiMessage = require('./api-endpoints-summary.json');
+
 exports.getAPI = (req, res) => {
-    res.status(200).send({ msg: 'Welcome to the API homepage' });
+    console.log(apiMessage);
+    res.status(200).send(apiMessage);
 }
