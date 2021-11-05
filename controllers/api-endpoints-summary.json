@@ -4,15 +4,13 @@
       "description": "serves up a json representation of all the available endpoints of the api"
     },
     "GET /api/topics": {
-      "description": "serves an array of all topics",
-      "queries": [],
+      "description": "Provides the list of topics present on the news board.",
       "exampleResponse": {
         "topics": [{ "slug": "football", "description": "Footie!" }]
       }
     },
-    "GET /api/articles": {
-      "description": "serves an array of all topics",
-      "queries": ["author", "topic", "sort_by", "order"],
+    "GET /api/articles/:article_id": {
+      "description": "Receive a specific article by requesting an article_id.",
       "exampleResponse": {
         "articles": [
           {
@@ -24,5 +22,86 @@
           }
         ]
       }
+    },
+    "PATCH /api/articles/:article_id": {
+        "description": "Allows the update of a specific parameter ('vote') for an existing article. The vote input is added to the existing vote count.",
+        "submitted info": ["article_id", "vote"],
+        "exampleResponse": {
+          "articles": [
+            {
+              "title": "Seafood substitutions are increasing",
+              "topic": "cooking",
+              "author": "weegembump",
+              "article_id": 5,
+              "votes": 9,
+              "body": "Text from the article..",
+              "created_at": 1527695953341
+            }
+          ]
+        }
+      },
+    "GET /api/articles": {
+        "description": "Receive a list of all articles. Requests can be filtered by 'topic'. Requests can be sorted by article title, date created, and can be returned in ascending / descending order.",
+        "queries": ["author", "topic", "sort_by", "title"],
+        "exampleResponse": {
+          "articles": [
+            {
+                "title": "Seafood substitutions are increasing",
+                "topic": "cooking",
+                "author": "weegembump",
+                "created_at": 1527695953341
+            },
+            {
+                "title": "Second article",
+                "topic": "Gardneing",
+                "author": "newbie002",
+                "created_at": 1527695953341
+            }
+          ]
+        }
+      },
+    "GET /api/articles/:article_id/comments": {
+        "description": "Receive the list of comments for a particular article.",
+        "submitted info": ["article_id"],
+        "exampleResponse": {
+            "comments": [
+            {
+                "comment_id": 7,
+                "author": "weegembump",
+                "article_id": 3,
+                "votes": 43,
+                "body": "Text from the comment..",
+                "created_at": 1527695953341
+            },
+            {
+                "comment_id": 20,
+                "author": "newbie002",
+                "article_id": 3,
+                "votes": -2,
+                "body": "Text from this comment..",
+                "created_at": 1527695953341
+            }
+            ]
+        }
+    },
+    "POST /api/articles/:article_id/comments": {
+        "description": "Post a comment to an article. Must be a valid user (checked via username) before posting.",
+        "submitted info": ["article_id", "username", "comment"],
+        "exampleResponse": {
+            "comment":
+            {
+                "comment_id": 7,
+                "author": "weegembump",
+                "article_id": 3,
+                "votes": 43,
+                "body": "Text from the comment..",
+                "created_at": 1527695953341
+            }
+        }
+    },
+    "DELETE /api/comments/:comment_id": {
+        "description": "Delete an existing comment.",
+        "submitted info": ["comment_id"],
+        "exampleResponse": "Status 204"
     }
   }
