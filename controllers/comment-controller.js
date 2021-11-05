@@ -5,7 +5,7 @@ exports.deleteComment = (req, res, next) => {
 
     removeComment(comment_id)
     .then((comment_count) => {
-        console.log(comment_count)
+        //console.log(comment_count)
         res.status(204).send();
     })
 }

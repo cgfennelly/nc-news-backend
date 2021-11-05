@@ -11,13 +11,13 @@ afterAll(() => db.end());
 let sendBody = {};
 
 describe('Server tests', () => {
-    describe.skip('Simple endpoint', () => {
+    describe('Simple endpoint', () => {
         test('client input of "/api" responds with 200 and welcome message', () => {
             return request(app)
             .get('/api')
             .expect(200)
-            .then(({ body }) => {
-                expect(body.msg).toBe('Welcome to the API homepage');
+            .then((apiMessage) => {
+                expect(apiMessage.body["welcome-msg"]).toBe('Welcome to the API homepage');
             });
         });
     });
@@ -409,7 +409,7 @@ describe('Server tests', () => {
             .delete('/api/comments/10')
             .expect(204)
             .then((comment_count) => {
-                console.log(comment_count);
+                //console.log(comment_count);
                 //expect(comment_count.count).toBe(17);
             })
         })
