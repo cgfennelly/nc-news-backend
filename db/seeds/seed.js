@@ -3,8 +3,6 @@ const db = require('../connection.js');
 
 const seed = (data) => {
   const { articleData, commentData, topicData, userData } = data;
-  // 1. create tables
-  // topics, users, articles, comments
   return db.query('DROP TABLE IF EXISTS comments;')
   .then(() => {
     return db.query('DROP TABLE IF EXISTS articles;')
@@ -19,7 +17,7 @@ const seed = (data) => {
     return db.query(`
     CREATE TABLE topics (
       slug VARCHAR PRIMARY KEY,
-      description TEXT
+      description TEXT NOT NULL
     );`);
   })
   .then(() => {
@@ -27,15 +25,15 @@ const seed = (data) => {
     CREATE TABLE users (
       username VARCHAR PRIMARY KEY,
       avatar_url VARCHAR,
-      name VARCHAR
+      name VARCHAR NOT NULL
     );`);
   })
   .then(() => {
     return db.query(`
     CREATE TABLE articles (
       article_id SERIAL PRIMARY KEY,
-      title VARCHAR,
-      body TEXT,
+      title VARCHAR NOT NULL,
+      body TEXT NOT NULL,
       votes INT DEFAULT 0,
       topic VARCHAR REFERENCES topics(slug),
       author VARCHAR REFERENCES users(username),
@@ -47,14 +45,13 @@ const seed = (data) => {
     CREATE TABLE comments (
       comment_id SERIAL PRIMARY KEY,
       author VARCHAR REFERENCES users(username),
-      article_id INT REFERENCES articles(article_id),
+      article_id INT REFERENCES articles(article_id) ON DELETE CASCADE,
       votes INT DEFAULT 0,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       body TEXT
     );`);
   })
   .then(() => {
-    // 2. insert data
     const queryStr = format(
       `INSERT INTO topics (
         slug,
