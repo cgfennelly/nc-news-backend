@@ -4,8 +4,8 @@ exports.deleteComment = (req, res, next) => {
     const { comment_id } = req.params;
 
     removeComment(comment_id)
-    .then((comment_count) => {
-        //console.log(comment_count)
+    .then(() => {
         res.status(204).send();
     })
+    .catch(next)
 }

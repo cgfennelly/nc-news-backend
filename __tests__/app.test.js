@@ -385,7 +385,7 @@ describe('Server tests', () => {
             return request(app)
             .post('/api/articles/9/comments')
             .send(sendBody)
-            .expect(200)
+            .expect(201)
             .then(({ body }) => {
                 const commentData = body.comment;
                 expect(commentData).toEqual(
@@ -400,18 +400,109 @@ describe('Server tests', () => {
                 )
             });
         });
+        describe('Endpoint POST /api/articles/:article_id/comments - Error handling', () => {
+            test('Status 400, invalid ID, e.g. string of "not-an-id"', () => {
+                sendBody = {
+                    username: "lurker",
+                    body: "insightful comment"
+                }
+                return request(app)
+                .post('/api/articles/BAD-ID/comments')
+                .send(sendBody)
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad parameter passed");
+                });
+            });
+            test('Status 404, non-existent ID, e.g. 0 or 9987', () => {
+                sendBody = {
+                    username: "lurker",
+                    body: "insightful comment"
+                }
+                return request(app)
+                .post('/api/articles/9987/comments')
+                .send(sendBody)
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("No content found");
+                });
+            });
+            test('Status 400, missing required field(s), e.g. no username or body properties', () => {
+                sendBody = {
+                    username: "lurker",
+                    body: ""
+                }
+                return request(app)
+                .post('/api/articles/9/comments')
+                .send(sendBody)
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad parameter passed");
+                });
+            });
+            test('Status 404, username does not exist', () => {
+                sendBody = {
+                    username: "lurker54",
+                    body: "Hello"
+                }
+                return request(app)
+                .post('/api/articles/9/comments')
+                .send(sendBody)
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("No content found");
+                });
+            });
+            test('Status 201, ignores unnecessary properties', () => {
+                sendBody = {
+                    username: "lurker",
+                    body: "Hello",
+                    random: "Not needed"
+                }
+                return request(app)
+                .post('/api/articles/9/comments')
+                .send(sendBody)
+                .expect(201)
+                .then(({ body }) => {
+                    const commentData = body.comment;
+                    expect(commentData).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            author: sendBody.username,
+                            article_id: 9,
+                            votes: 1,
+                            created_at: expect.any(String),
+                            body: sendBody.body
+                        })
+                    )
+                });
+            });
+        })
     })
     describe('Endpoint DELETE /api/comments/:comment_id', () => {
         test('Deleting a comment', () => {
-            // Starts with 18 comments in the comments table
-            // Remove comment_id 10
             return request(app)
             .delete('/api/comments/10')
             .expect(204)
-            .then((comment_count) => {
-                //console.log(comment_count);
-                //expect(comment_count.count).toBe(17);
-            })
-        })
+            
+        });
+        describe('Endpoint DELETE /api/comments/:comment_id - Error handling', () => {
+            test('Status 400, invalid ID, e.g. string of "not-an-id"', () => {
+                return request(app)
+                .delete('/api/comments/BAD-ID')
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad parameter passed");
+                });
+            });
+            test('Status 404, non-existent ID, e.g. 0 or 9999', () => {
+                return request(app)
+                .delete('/api/comments/9999')
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("No content found");
+                });
+            });
+        });
     })
 });

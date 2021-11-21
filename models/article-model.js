@@ -86,11 +86,29 @@ exports.fetchArticleIDComments = (article_id) => {
 }
 
 exports.submitArticleIDComment = (article_id, comment) => {
-    return db.query(`INSERT INTO comments 
-    (body, votes, author, article_id) 
-    VALUES 
-    ($1, 1, $2, $3) RETURNING * ;`, [comment.body, comment.username, article_id])
-    .then(({ rows }) => {
-        return rows;
+    
+    const sanitisedVar = [comment.username];
+    return Promise.all([article_id, comment, db.query(`SELECT username FROM users WHERE username=$1 ;`, sanitisedVar), db.query(`SELECT * FROM articles WHERE article_id=$1 ;`, [article_id])])
+    .then(([article_id, comment, query1, query2]) => {
+        
+        if(query1.rows.length === 0) {
+            return Promise.reject({status: 404, msg: 'No content found'})
+        }
+
+        if(query2.rows.length === 0) {
+            return Promise.reject({status: 404, msg: 'No content found'})
+        }
+
+        return db.query(`INSERT INTO comments 
+        (body, votes, author, article_id) 
+        VALUES 
+        ($1, 1, $2, $3) RETURNING * ;`, [comment.body, comment.username, article_id])
+        .then(({ rows }) => {
+            
+            if (rows.length === 0) {
+                return Promise.reject({status: 404, msg: "No content found"});
+            }
+            return rows;
+        })
     })
 }

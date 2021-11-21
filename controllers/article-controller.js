@@ -62,8 +62,14 @@ exports.getArticleIDComments = (req, res, next) => {
 exports.postArticleIDComment = (req, res, next) => {
     const { article_id } = req.params;
     const comment = req.body;
+
+    if (comment.username === '' || comment.body === '') {
+        throw ({status: 400, msg: 'Bad parameter passed'});
+    }
+
     submitArticleIDComment(article_id, comment)
     .then((body) => {
-        res.status(200).send({'comment': body[0]});
+        res.status(201).send({'comment': body[0]});
     })
+    .catch(next);
 }
