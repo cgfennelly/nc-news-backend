@@ -3,10 +3,6 @@
 
 ## Summary
 
-//////This is an API with the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as reddit) which should provide this information to the front end architecture.
-
-The PSQL database is accessed via node-postgres.
-
 This is an API with the purpose of accessing application data programatically. This project holds data for a news site, including: articles, comments and users. There are Test, Development, and Production instances of this data.
 
 This project builds a back-end service and demonstrates:
