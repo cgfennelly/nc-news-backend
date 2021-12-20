@@ -7,12 +7,15 @@
 
 The PSQL database is accessed via node-postgres.
 
-This is an API with the purpose of accessing application data programatically. This project builds a back-end service and demonstrates:
+This is an API with the purpose of accessing application data programatically. This project holds data for a news site, including: articles, comments and users. There are Test, Development, and Production instances of this data.
+
+This project builds a back-end service and demonstrates:
 - Use of MVC architecture
 - Integration of a PSQL database
 - Test driven development and effective error handling
 - Building a RESTful API
 - Use of a node.js web server app
+
 
 This has been written using:
 - node.js
